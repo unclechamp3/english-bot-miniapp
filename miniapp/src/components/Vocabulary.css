@@ -1,0 +1,315 @@
+.vocabulary {
+  padding: 20px;
+  padding-bottom: 80px;
+}
+
+.vocabulary-header {
+  margin-bottom: 20px;
+}
+
+.vocabulary-header h1 {
+  margin: 0 0 5px 0;
+  font-size: 28px;
+}
+
+.vocabulary-subtitle {
+  margin: 0;
+  color: var(--tg-theme-hint-color, #999);
+  font-size: 14px;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--tg-theme-secondary-bg-color, #f0f0f0);
+}
+
+.tab {
+  flex: 1;
+  padding: 12px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--tg-theme-hint-color, #999);
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  color: var(--tg-theme-text-color, #000);
+}
+
+.tab.active {
+  color: var(--tg-theme-link-color, #3390ec);
+  border-bottom-color: var(--tg-theme-link-color, #3390ec);
+}
+
+.tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Stats */
+.vocab-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+  border-radius: 12px;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--tg-theme-text-color, #000);
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--tg-theme-hint-color, #999);
+  margin-top: 4px;
+}
+
+/* Add Word Form */
+.add-word-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.add-word-form input {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid var(--tg-theme-secondary-bg-color, #f0f0f0);
+  border-radius: 12px;
+  font-size: 16px;
+  background: var(--tg-theme-bg-color, #fff);
+  color: var(--tg-theme-text-color, #000);
+}
+
+.add-word-form input:focus {
+  outline: none;
+  border-color: var(--tg-theme-link-color, #3390ec);
+}
+
+.add-word-form button {
+  padding: 12px 20px;
+  background: var(--tg-theme-button-color, #3390ec);
+  color: var(--tg-theme-button-text-color, #fff);
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.add-word-form button:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.add-word-form button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Words List */
+.words-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.word-card {
+  padding: 16px;
+  background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+  border-radius: 12px;
+  border-left: 4px solid var(--tg-theme-hint-color, #999);
+}
+
+.word-card.new {
+  border-left-color: #4CAF50;
+}
+
+.word-card.learning {
+  border-left-color: #FF9800;
+}
+
+.word-card.mastered {
+  border-left-color: #2196F3;
+}
+
+.word-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.word-header h3 {
+  margin: 0;
+  font-size: 20px;
+  color: var(--tg-theme-text-color, #000);
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.status-badge.new {
+  background: #4CAF50;
+  color: white;
+}
+
+.status-badge.learning {
+  background: #FF9800;
+  color: white;
+}
+
+.status-badge.mastered {
+  background: #2196F3;
+  color: white;
+}
+
+.translation {
+  margin: 8px 0;
+  font-size: 16px;
+  color: var(--tg-theme-text-color, #000);
+}
+
+.example {
+  margin: 8px 0;
+  font-size: 14px;
+  color: var(--tg-theme-hint-color, #666);
+  font-style: italic;
+}
+
+.word-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--tg-theme-hint-color, #999);
+}
+
+.no-words {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--tg-theme-hint-color, #999);
+}
+
+.no-words p:first-child {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+/* Review Tab */
+.review-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.review-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.review-progress {
+  text-align: center;
+  font-size: 14px;
+  color: var(--tg-theme-hint-color, #999);
+  margin-bottom: 20px;
+}
+
+.review-word {
+  background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+  padding: 30px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.review-word h2 {
+  font-size: 32px;
+  margin: 0 0 15px 0;
+  color: var(--tg-theme-text-color, #000);
+}
+
+.review-word .translation {
+  font-size: 18px;
+  margin: 10px 0;
+}
+
+.review-word .example {
+  font-size: 16px;
+  margin: 10px 0;
+  color: var(--tg-theme-hint-color, #666);
+}
+
+.review-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.review-buttons button {
+  flex: 1;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.forgot-button {
+  background: #f44336;
+  color: white;
+}
+
+.forgot-button:hover {
+  background: #d32f2f;
+}
+
+.know-button {
+  background: #4CAF50;
+  color: white;
+}
+
+.know-button:hover {
+  background: #388E3C;
+}
+
+.no-review, .review-complete {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.no-review h2, .review-complete h2 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.no-review p, .review-complete p {
+  color: var(--tg-theme-hint-color, #999);
+  font-size: 16px;
+}
+

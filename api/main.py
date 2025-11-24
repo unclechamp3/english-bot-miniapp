@@ -14,7 +14,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import logging
 
-from api.routes import analytics, auth
+from api.routes import analytics, auth, vocabulary
 
 # Configure logging
 logging.basicConfig(
@@ -49,6 +49,7 @@ app.add_middleware(
 # Include routers
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(analytics.router, prefix="/api", tags=["analytics"])
+app.include_router(vocabulary.router, prefix="/api", tags=["vocabulary"])
 
 
 @app.get("/")

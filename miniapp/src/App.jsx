@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Dashboard from './components/Dashboard'
+import Vocabulary from './components/Vocabulary'
 import './App.css'
 
 function App() {
@@ -8,6 +9,7 @@ function App() {
   const [initData, setInitData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [activeTab, setActiveTab] = useState('analytics') // 'analytics' or 'vocabulary'
 
   useEffect(() => {
     // Initialize Telegram WebApp
@@ -78,7 +80,28 @@ function App() {
 
   return (
     <div className="app">
-      <Dashboard userId={userId} initData={initData} tg={tg} />
+      {/* Navigation Tabs */}
+      <div className="app-tabs">
+        <button 
+          className={`app-tab ${activeTab === 'analytics' ? 'active' : ''}`}
+          onClick={() => setActiveTab('analytics')}
+        >
+          📊 Analytics
+        </button>
+        <button 
+          className={`app-tab ${activeTab === 'vocabulary' ? 'active' : ''}`}
+          onClick={() => setActiveTab('vocabulary')}
+        >
+          📚 Vocabulary
+        </button>
+      </div>
+
+      {/* Content */}
+      {activeTab === 'analytics' ? (
+        <Dashboard userId={userId} initData={initData} tg={tg} />
+      ) : (
+        <Vocabulary userId={userId} initData={initData} tg={tg} />
+      )}
     </div>
   )
 }
