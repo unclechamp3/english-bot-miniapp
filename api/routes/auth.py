@@ -11,12 +11,7 @@ from typing import Optional
 from fastapi import APIRouter, Header, HTTPException, Depends
 from pydantic import BaseModel
 
-# Import bot token from parent config
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-
-from config import Config
+import os
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -62,9 +57,14 @@ def validate_telegram_webapp_data(init_data: str) -> Optional[TelegramUser]:
         data_check_string = '\n'.join(data_check_string_parts)
         
         # Calculate expected hash
+        bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
+        if not bot_token:
+            logger.error("TELEGRAM_BOT_TOKEN not set in environment")
+            return None
+        
         secret_key = hmac.new(
             key=b"WebAppData",
-            msg=Config.TELEGRAM_BOT_TOKEN.encode(),
+            msg=bot_token.encode(),
             digestmod=hashlib.sha256
         ).digest()
         
