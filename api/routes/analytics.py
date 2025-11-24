@@ -6,11 +6,6 @@ import logging
 from typing import Dict, Any
 from fastapi import APIRouter, HTTPException, Depends
 
-# Add parent directory to path
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-
 from services.analytics_service import analytics_service
 from api.routes.auth import get_current_user, TelegramUser
 
