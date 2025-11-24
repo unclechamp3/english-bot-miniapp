@@ -37,8 +37,15 @@ def validate_telegram_webapp_data(init_data: str) -> Optional[TelegramUser]:
         TelegramUser if valid, None otherwise
     """
     try:
+        if not init_data or not init_data.strip():
+            logger.warning("Empty initData received")
+            return None
+            
+        logger.info(f"Validating initData (length: {len(init_data)})")
+        
         # Parse init_data
         parsed_data = parse_qs(init_data)
+        logger.debug(f"Parsed data keys: {list(parsed_data.keys())}")
         
         # Extract hash
         received_hash = parsed_data.get('hash', [None])[0]
@@ -55,12 +62,15 @@ def validate_telegram_webapp_data(init_data: str) -> Optional[TelegramUser]:
             data_check_string_parts.append(f"{key}={value}")
         
         data_check_string = '\n'.join(data_check_string_parts)
+        logger.debug(f"Data check string: {data_check_string[:100]}...")
         
         # Calculate expected hash
         bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
         if not bot_token:
             logger.error("TELEGRAM_BOT_TOKEN not set in environment")
             return None
+        
+        logger.debug(f"Bot token found (length: {len(bot_token)})")
         
         secret_key = hmac.new(
             key=b"WebAppData",
@@ -74,9 +84,11 @@ def validate_telegram_webapp_data(init_data: str) -> Optional[TelegramUser]:
             digestmod=hashlib.sha256
         ).hexdigest()
         
+        logger.debug(f"Hash comparison: received={received_hash[:20]}..., expected={expected_hash[:20]}...")
+        
         # Validate hash
         if received_hash != expected_hash:
-            logger.warning("Invalid hash in initData")
+            logger.warning(f"Invalid hash in initData. Received: {received_hash[:20]}..., Expected: {expected_hash[:20]}...")
             return None
         
         # Extract user data
@@ -88,11 +100,12 @@ def validate_telegram_webapp_data(init_data: str) -> Optional[TelegramUser]:
         # Parse user JSON
         import json
         user_data = json.loads(unquote(user_json))
+        logger.info(f"Successfully validated user: {user_data.get('id')}")
         
         return TelegramUser(**user_data)
         
     except Exception as e:
-        logger.error(f"Error validating initData: {e}")
+        logger.error(f"Error validating initData: {e}", exc_info=True)
         return None
 
 
@@ -112,16 +125,19 @@ async def get_current_user(
         HTTPException: If validation fails
     """
     if not x_telegram_init_data:
+        logger.warning("Missing X-Telegram-Init-Data header")
         raise HTTPException(
             status_code=401,
             detail="Missing Telegram authentication data"
         )
     
+    logger.info(f"Received initData header (length: {len(x_telegram_init_data)})")
     user = validate_telegram_webapp_data(x_telegram_init_data)
     if not user:
+        logger.warning("Validation failed for initData")
         raise HTTPException(
             status_code=401,
-            detail="Invalid Telegram authentication data"
+            detail="Invalid Telegram authentication data. Please check logs for details."
         )
     
     return user

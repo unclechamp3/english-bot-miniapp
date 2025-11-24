@@ -23,12 +23,26 @@ function App() {
       const user = webapp.initDataUnsafe?.user
       const data = webapp.initData
       
+      console.log('Telegram WebApp data:', {
+        hasInitData: !!data,
+        initDataLength: data?.length,
+        hasUser: !!user,
+        userId: user?.id
+      })
+      
       if (user && user.id) {
         setUserId(user.id)
-        setInitData(data)
+        // initData может быть пустым в некоторых случаях, но user есть
+        if (data) {
+          setInitData(data)
+        } else {
+          console.warn('initData is empty, but user data is available')
+          // Попробуем использовать initDataUnsafe для создания строки
+          setInitData('')
+        }
         console.log('Telegram user initialized:', user.id)
       } else {
-        console.error('No user data from Telegram')
+        console.error('No user data from Telegram', { user, data })
         setError('Could not get user data from Telegram')
       }
       

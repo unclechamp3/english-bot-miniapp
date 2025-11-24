@@ -14,17 +14,33 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 async function apiRequest(endpoint, initData, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`
   
+  console.log('API Request:', {
+    url,
+    hasInitData: !!initData,
+    initDataLength: initData?.length,
+    endpoint
+  })
+  
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  }
+  
+  // Only add initData if it exists and is not empty
+  if (initData && initData.trim()) {
+    headers['X-Telegram-Init-Data'] = initData
+  } else {
+    console.warn('initData is empty or missing, request may fail authentication')
+  }
+  
   const response = await fetch(url, {
     ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Telegram-Init-Data': initData,
-      ...options.headers,
-    },
+    headers,
   })
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({ detail: 'Unknown error' }))
+    console.error('API Error:', error)
     throw new Error(error.detail || `HTTP ${response.status}`)
   }
 
