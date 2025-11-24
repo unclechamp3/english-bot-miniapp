@@ -4,13 +4,43 @@ Analytics routes for retrieving user statistics and chart data.
 
 import logging
 from typing import Dict, Any
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Body
+from pydantic import BaseModel
+
+import os
+from fastapi import Header
 
 from services.analytics_service import analytics_service
 from api.routes.auth import get_current_user, TelegramUser
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
+
+
+def verify_bot_token(x_bot_token: str = Header(None, alias="X-Bot-Token")) -> bool:
+    """
+    Verify bot token for internal API calls.
+    
+    Args:
+        x_bot_token: Bot token from header
+        
+    Returns:
+        True if valid, False otherwise
+    """
+    expected_token = os.getenv("TELEGRAM_BOT_TOKEN")
+    if not expected_token:
+        return False
+    return x_bot_token == expected_token
+
+
+class TrackMessageRequest(BaseModel):
+    """Request model for tracking a message."""
+    message_type: str  # "voice" or "text"
+
+
+class TrackErrorsRequest(BaseModel):
+    """Request model for tracking errors."""
+    errors: str
 
 
 @router.get("/analytics/{user_id}")
@@ -155,5 +185,75 @@ async def get_summary_stats(
         },
         "recent_activity": chart_data.get("daily", []),
         "error_breakdown": chart_data.get("error_types", {})
+    }
+
+
+@router.post("/analytics/{user_id}/track-message")
+async def track_message(
+    user_id: int,
+    request: TrackMessageRequest = Body(...),
+    x_bot_token: str = Header(None, alias="X-Bot-Token")
+) -> Dict[str, Any]:
+    """
+    Track a message for analytics.
+    Called by bot with X-Bot-Token header.
+    
+    Args:
+        user_id: Telegram user ID
+        request: Message tracking request
+        x_bot_token: Bot token for authentication
+        
+    Returns:
+        Success status
+    """
+    # Verify bot token (required for this endpoint)
+    if not x_bot_token or not verify_bot_token(x_bot_token):
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or missing bot token"
+        )
+    
+    # Track the message
+    analytics_service.track_message(user_id, request.message_type)
+    
+    logger.info(f"Tracked {request.message_type} message for user {user_id}")
+    return {
+        "status": "ok",
+        "message": f"Tracked {request.message_type} message"
+    }
+
+
+@router.post("/analytics/{user_id}/track-errors")
+async def track_errors(
+    user_id: int,
+    request: TrackErrorsRequest = Body(...),
+    x_bot_token: str = Header(None, alias="X-Bot-Token")
+) -> Dict[str, Any]:
+    """
+    Track grammar errors for analytics.
+    Called by bot with X-Bot-Token header.
+    
+    Args:
+        user_id: Telegram user ID
+        request: Error tracking request
+        x_bot_token: Bot token for authentication
+        
+    Returns:
+        Success status
+    """
+    # Verify bot token (required for this endpoint)
+    if not x_bot_token or not verify_bot_token(x_bot_token):
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or missing bot token"
+        )
+    
+    # Track the errors
+    analytics_service.track_errors(user_id, request.errors)
+    
+    logger.info(f"Tracked errors for user {user_id}")
+    return {
+        "status": "ok",
+        "message": "Tracked errors"
     }
 
